@@ -10,9 +10,11 @@ export default function middleware(request) {
 	console.log('Running middleware');
 	if (request.headers.get('cookie')?.includes('no_cache=1')) {
 		console.log('Setting no-cache header');
+		const requestHeaders = new Headers(request.headers);
+		requestHeaders.set('Authorization', 'bearer 1234');
 		return next({
-			headers: {
-				Authorization: 'bearer 1234'
+			request: {
+				headers: requestHeaders
 			}
 		});
 	}
