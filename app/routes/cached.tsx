@@ -8,8 +8,10 @@ export function headers() {
 	};
 }
 
-export function loader({ request }) {
+export async function loader({ request }) {
 	const headers = Object.fromEntries(request.headers.entries());
+	// Wait 5 seconds to simulate a slow response
+	await new Promise(resolve => setTimeout(resolve, 5000));
 	return { date: new Date().toISOString(), headers };
 }
 
