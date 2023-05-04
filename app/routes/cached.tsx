@@ -1,18 +1,16 @@
 import { useLoaderData } from '@remix-run/react';
 
-export function headers({ request }) {
+export function headers() {
 	// Return stale-while-revalidate headers. Cache for 5 minutes, but
 	// revalidate in the background for up to 1 hour.
-	const headers = Object.fromEntries(request.headers.entries());
-
 	return {
-		'cache-control': 's-maxage=300, stale-while-revalidate=3600',
-		headers
+		'cache-control': 's-maxage=300, stale-while-revalidate=3600'
 	};
 }
 
-export function loader() {
-	return { date: new Date().toISOString() };
+export function loader({ request }) {
+	const headers = Object.fromEntries(request.headers.entries());
+	return { date: new Date().toISOString(), headers };
 }
 
 export default function Blocked() {
