@@ -1,13 +1,22 @@
+import { next } from '@vercel/edge';
+
 export const config = {
-	// Only run the middleware on /blocked
-	matcher: '/blocked'
+	// Only run the middleware on /cached
+	matcher: '/cached'
 };
 
 export default function middleware(request) {
-	const url = new URL(request.url);
-	console.log('Running middleware', url.pathname);
-	url.pathname = 'index';
+	// If the request has the no_cache=1 cookie, then set a header to disable caching
+	console.log('Running middleware');
+	if (request.headers.get('cookie')?.includes('no_cache=1')) {
+		console.log('Setting no-cache header');
+		return next({
+			headers: {
+				Authorization: 'bearer 1234'
+			}
+		});
+	}
 
-	// Always redirect to /index
-	return Response.redirect(url);
+	// Otherwise, do nothing and let the request continue
+	return next();
 }
